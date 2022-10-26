@@ -1,7 +1,11 @@
 import React from 'react';
+import { useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { AuthContext } from '../../Context/AuthProvider/AuthProvider';
 
 const Header = () => {
+    const { user } = useContext(AuthContext)
+    console.log(user);
     return (
         <div>
             <div className="navbar bg-base-100">
@@ -19,17 +23,25 @@ const Header = () => {
 
                         </ul>
                     </div>
-                    <a className="btn btn-ghost normal-case text-xl">daisyUI</a>
+                    <a className="btn btn-ghost normal-case text-xl">LP</a>
                 </div>
                 <div className="navbar-center hidden lg:flex">
                     <ul className="menu menu-horizontal p-0">
                         <li><Link to='/'>Home</Link></li>
-                        <li><Link to='/signup'>SignUp</Link></li>
-                        <li><button>LogOut</button></li>
+                        {
+                            user ?
+
+                                <li><button>LogOut</button></li>
+                                :
+                                <li><Link to='/signup'>SignUp</Link></li>
+
+
+                        }
                         <li><Link to='courses'>Courses</Link></li>
                     </ul>
                 </div>
                 <div className="navbar-end">
+                    <p>Name: {user.displayName}</p>
                     <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
                         <div className="w-10 rounded-full">
                             <img src="https://placeimg.com/80/80/people" />
