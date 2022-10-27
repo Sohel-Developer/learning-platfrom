@@ -11,7 +11,7 @@ import { GoogleAuthProvider } from "firebase/auth";
 
 const Login = () => {
 
-    const { setUser, googleLogin } = useContext(AuthContext)
+    const { setUser, googleLogin, emailPasswordLogin } = useContext(AuthContext)
 
 
 
@@ -20,17 +20,44 @@ const Login = () => {
         googleLogin(googleProvider)
             .then(result => {
                 const user = result.user;
-                console.log(user);
-                // setUser(user)
+                // console.log(user);
+                setUser(user)
             }).catch((error) => {
                 // Handle Errors here.
                 const errorMessage = error.message;
-                console.log(errorMessage);
+                // console.log(errorMessage);
 
             });
 
     }
 
+    /* Email Password Login Seystem  */
+    const handaleEmailPassword = (e) => {
+        e.preventDefault()
+
+        const form = e.target;
+        const email = form.email.value;
+        const password = form.password.value
+        // console.log(email, password);
+
+
+        emailPasswordLogin(email, password)
+            .then((userCredential) => {
+                // Signed in 
+                const user = userCredential.user;
+                setUser(user)
+
+                // ...
+            })
+            .catch((error) => {
+                const errorMessage = error.message;
+            });
+
+
+        form.reset()
+
+
+    }
 
 
     return (
@@ -38,35 +65,36 @@ const Login = () => {
             <div className="hero min-h-screen bg-base-200">
                 <div className="hero-content flex-col lg:flex-row-reverse">
                     <div className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
-                        <div className="card-body">
+                        <form onSubmit={handaleEmailPassword} className="card-body">
                             <div className="form-control">
                                 <label className="label">
                                     <span className="label-text">Email</span>
                                 </label>
-                                <input type="text" placeholder="email" className="input input-bordered" />
+                                <input name='email' type="email" placeholder="email" className="input input-bordered" />
                             </div>
                             <div className="form-control">
                                 <label className="label">
                                     <span className="label-text">Password</span>
                                 </label>
-                                <input type="text" placeholder="password" className="input input-bordered" />
+                                <input name='password' type="password" placeholder="password" className="input input-bordered" />
                                 <label className="label">
                                     <Link to='/signup' className="label-text-alt link link-hover">Create a New Account</Link>
                                 </label>
                             </div>
-                            <div className="form-control mt-6">
-                                <button className="btn btn-primary">Login</button>
-                            </div>
 
-                            <div>
-                                <button onClick={handleGoogleSignIn} className="btn btn-circle btn-outline btn-info mr-4">
-                                    <FaGoogle />
-                                </button>
-                                <button className="btn btn-circle btn-outline btn-info ">
-                                    <FaGithub />
-                                </button>
+                            <div className="form-control mt-6">
+                                <button type="submit" className="btn btn-primary">Login</button>
                             </div>
+                        </form>
+                        <div>
+                            <button onClick={handleGoogleSignIn} className="btn btn-circle btn-outline btn-info mr-4">
+                                <FaGoogle />
+                            </button>
+                            <button className="btn btn-circle btn-outline btn-info ">
+                                <FaGithub />
+                            </button>
                         </div>
+
                     </div>
                 </div>
             </div>

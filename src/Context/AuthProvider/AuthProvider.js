@@ -1,6 +1,6 @@
 import React, { createContext } from 'react';
 import { useState } from 'react';
-import { getAuth, onAuthStateChanged, signInWithPopup, signOut } from "firebase/auth";
+import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut } from "firebase/auth";
 import app from '../../Firebase/Firebase.Config';
 import { useEffect } from 'react';
 
@@ -12,6 +12,8 @@ const AuthProvider = ({ children }) => {
 
     const [user, setUser] = useState(null)
 
+    const [error, setError] = useState("")
+
     /* Google Login Provider */
 
     const googleLogin = (provider) => {
@@ -20,6 +22,17 @@ const AuthProvider = ({ children }) => {
     /* LogOut Syestem */
     const logOut = () => {
         return signOut(auth)
+    }
+
+    /* Email Password Create account Syestem */
+
+    const emailPasswordCreateAccount = (email, password) => {
+        return createUserWithEmailAndPassword(auth, email, password)
+    }
+
+    /* Email Login Password */
+    const emailPasswordLogin = (email, password) => {
+        return signInWithEmailAndPassword(auth, email, password)
     }
 
     /* User Set In Outside Call */
@@ -36,7 +49,7 @@ const AuthProvider = ({ children }) => {
 
 
 
-    let authValue = { user, googleLogin, setUser, logOut }
+    let authValue = { user, googleLogin, emailPasswordLogin, setUser, logOut, emailPasswordCreateAccount, error, setError }
     return (
         <AuthContext.Provider value={authValue}>
             {children}
