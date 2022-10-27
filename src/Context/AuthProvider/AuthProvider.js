@@ -1,34 +1,47 @@
 import React, { createContext } from 'react';
 import { useState } from 'react';
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-// import { getAuth } from "firebase/auth";
-// import App from '../../App';
+import { getAuth, onAuthStateChanged, signInWithPopup, signOut } from "firebase/auth";
+import app from '../../Firebase/Firebase.Config';
+import { useEffect } from 'react';
 
 export const AuthContext = createContext()
 
-// const auth = getAuth(App);
-
-
+const auth = getAuth(app)
 
 const AuthProvider = ({ children }) => {
 
-    const [user, setUser] = useState({ displayName: "Sohel Rana" })
+    const [user, setUser] = useState(null)
 
-    /* Google Login System */
-    const provider = new GoogleAuthProvider();
+    /* Google Login Provider */
 
-    // const googleSignIn = () => {
-    //     return signInWithPopup(auth, provider)
-    // }
+    const googleLogin = (provider) => {
+        return signInWithPopup(auth, provider)
+    }
+    /* LogOut Syestem */
+    const logOut = () => {
+        return signOut(auth)
+    }
+
+    /* User Set In Outside Call */
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+            console.log("state Change");
+            setUser(currentUser)
+        })
+        return () => {
+            unsubscribe()
+        }
+    }, [])
 
 
-    let authValue = { user }
+
+
+    let authValue = { user, googleLogin, setUser, logOut }
     return (
-        <div>
-            <AuthContext.Provider value={authValue}>
-                {children}
-            </AuthContext.Provider>
-        </div>
+        <AuthContext.Provider value={authValue}>
+            {children}
+        </AuthContext.Provider>
+
     );
 };
 

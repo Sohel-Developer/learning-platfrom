@@ -4,8 +4,22 @@ import { Link } from 'react-router-dom';
 import { AuthContext } from '../../Context/AuthProvider/AuthProvider';
 
 const Header = () => {
-    const { user } = useContext(AuthContext)
+    const { user, logOut } = useContext(AuthContext)
+
     console.log(user);
+
+    /* LogOut */
+    const handaleLogout = () => {
+        logOut()
+            .then(() => {
+                // console.log("Confirm LogOut");
+            }).catch(() => {
+            })
+    }
+
+
+
+
     return (
         <div>
             <div className="navbar bg-base-100">
@@ -31,7 +45,7 @@ const Header = () => {
                         {
                             user ?
 
-                                <li><button>LogOut</button></li>
+                                <li><button onClick={handaleLogout}>LogOut</button></li>
                                 :
                                 <li><Link to='/signup'>SignUp</Link></li>
 
@@ -41,10 +55,10 @@ const Header = () => {
                     </ul>
                 </div>
                 <div className="navbar-end">
-                    <p>Name: {user.displayName}</p>
+                    <p>{user?.displayName}</p>
                     <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
                         <div className="w-10 rounded-full">
-                            <img src="https://placeimg.com/80/80/people" />
+                            <img src={user?.photoURL} />
                         </div>
                     </label>
                 </div>
